@@ -1,10 +1,12 @@
-import { PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 class Heading extends PureComponent {
   render() {
+    const { children } = this.props;
+
     return (
-      <h1>{this.props.children}</h1>
+      <h1>{children}</h1>
     );
   }
 }

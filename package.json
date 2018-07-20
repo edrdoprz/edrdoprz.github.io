@@ -1,28 +1,87 @@
 {
+  "name": "eduardo.perez.app",
+  "version": "0.0.1",
+  "description": "My Portfolio Web App",
   "homepage": "https://edrdoprz.github.io",
-  "devDependencies": {
-    "@neutrinojs/airbnb": "^8.3.0",
-    "@neutrinojs/jest": "^8.3.0",
-    "@neutrinojs/react": "^8.3.0",
-    "neutrino": "^8.3.0"
-  },
-  "name": "eduardo-perez-app",
-  "version": "1.0.0",
   "main": "index.js",
-  "license": "MIT",
   "scripts": {
-    "build": "neutrino build",
-    "start": "neutrino start",
-    "lint": "neutrino lint",
-    "test": "neutrino test",
+    "start": "webpack-dev-server",
+    "build": "cross-env npm run clean && webpack --config webpack.production.config.js --progress --profile --colors",
+    "clean": "rimraf dist",
+    "lint": "eslint ./app/**/**.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "coverage": "jest --coverage",
+    "webpack:dev": "webpack --colors",
+    "webpack:prod": "webpack --config webpack.production.config.js --colors",
+
     "predeploy": "yarn build",
-    "deploy": "gh-pages -b master -d build"
+    "deploy": "gh-pages -b master -d dist"
+  },
+  "author": "Eduardo Perez",
+  "license": "UNLICENSED",
+  "jest": {
+    "setupFiles": [
+      "<rootDir>/config/jest/shim.js"
+    ],
+    "collectCoverageFrom": [
+      "app/**/*.{js,jsx,ts,tsx}"
+    ],
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/config/jest/assetsTransformer.js",
+      "\\.(css|less)$": "<rootDir>/config/jest/assetsTransformer.js"
+    },
+    "testMatch": [
+      "**/?(*.)(spec|test).js?(x)"
+    ],
+    "transform": {
+      "\\.js$": "babel-jest"
+    }
   },
   "dependencies": {
+    "cross-env": "5.2.0",
+    "prop-types": "15.6.2",
+    "react": "16.4.1",
+    "react-dom": "16.4.1",
+    "react-hot-loader": "4.3.2",
+    "react-router-dom": "4.3.0"
+  },
+  "devDependencies": {
+    "babel-cli": "6.26.0",
+    "babel-core": "6.26.0",
+    "babel-eslint": "8.2.6",
+    "babel-jest": "23.0.1",
+    "babel-loader": "7.1.4",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "6.24.1",
+    "babel-preset-stage-2": "6.24.1",
+    "copy-webpack-plugin": "4.5.2",
+    "css-hot-loader": "1.4.0",
+    "css-loader": "1.0.0",
+    "enzyme": "3.3.0",
+    "enzyme-adapter-react-16": "1.1.1",
+    "eslint": "4.19.0",
+    "eslint-config-airbnb": "17.0.0",
+    "eslint-loader": "2.1.0",
+    "eslint-plugin-import": "2.13.0",
+    "eslint-plugin-jsx-a11y": "6.1.1",
+    "eslint-plugin-react": "7.10.0",
+    "extract-text-webpack-plugin": "4.0.0-beta.0",
+    "file-loader": "1.1.11",
     "gh-pages": "^1.2.0",
-    "prop-types": "^15.6.2",
-    "react": "^16.4.1",
-    "react-dom": "^16.4.1",
-    "react-hot-loader": "^4.3.3"
+    "html-webpack-plugin": "3.2.0",
+    "jest": "22.1.0",
+    "node-sass": "4.9.2",
+    "open-browser-webpack-plugin": "0.0.5",
+    "react-addons-test-utils": "15.6.2",
+    "react-test-renderer": "16.4.1",
+    "rimraf": "2.6.2",
+    "sass-loader": "7.0.3",
+    "style-loader": "0.21.0",
+    "uglifyjs-webpack-plugin": "1.2.7",
+    "url-loader": "1.0.1",
+    "webpack": "4.15.1",
+    "webpack-cli": "3.1.0",
+    "webpack-dev-server": "3.1.4"
   }
 }
