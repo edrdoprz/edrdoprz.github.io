@@ -10,7 +10,6 @@ const config = {
     maxModules: 0
   },
   mode: 'production',
-  devtool: 'cheap-module-source-map',
 
   entry: [
     './main.js',
@@ -40,7 +39,7 @@ const config = {
     }),
     new webpack.DefinePlugin({ 'process.env': { NODE_ENV: JSON.stringify('production') } }),
     new ExtractTextPlugin({ filename: './styles/style.css', disable: false, allChunks: true }),
-    new CopyWebpackPlugin([{ from: './vendors', to: 'vendors' }]),
+    new CopyWebpackPlugin([{ from: './vendors', to: 'vendors' }, { from: '../CNAME' }]),
   ],
 
   optimization: {

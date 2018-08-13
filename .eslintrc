@@ -15,13 +15,16 @@
   },
   "rules": {
     "space-before-function-paren": "off",
-    "react/prefer-stateless-function": "warn",
+    "import/no-extraneous-dependencies": ["error", { "devDependencies": ["**/webpack.*.js"] }],
+    "react/prefer-stateless-function": "off",
     "react/jsx-one-expression-per-line": "off",
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    "react/no-unused-state": "warn",
     "linebreak-style": "off",
     "global-require": "off",
     "semi": "warn",
     "arrow-body-style": "off",
-    "no-multiple-empty-lines": ["warn", {"max": 1}]
+    "no-multiple-empty-lines": ["warn", {"max": 1}],
+    "object-curly-newline": "off"
   }
 }

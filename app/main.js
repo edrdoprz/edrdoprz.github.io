@@ -2,22 +2,22 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 
-import Root from './config/Root';
+import App from './components/App';
 
 const render = (Component) => {
   ReactDOM.render(
     <AppContainer>
       <Component />
     </AppContainer>,
-    document.getElementById('root'),
+    document.getElementById('app'),
   );
 };
 
-render(Root);
+render(App);
 
 if (module.hot) {
-  module.hot.accept('./config/Root', () => {
-    const newApp = require('./config/Root').default;
+  module.hot.accept('./components/App', () => {
+    const newApp = require('./components/App').default;
     render(newApp);
   });
 }

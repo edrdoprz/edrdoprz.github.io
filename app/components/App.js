@@ -1,23 +1,27 @@
+import React from 'react';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+} from 'react-router-dom';
+// import styled from 'styled-components';
 
-import React, { Component } from 'react';
+import Home from './Home';
+import TicTacToe from './TicTacToe';
 
-import Heading from './common/Heading';
+// const Wrapper = styled.div`
+//   height: 100%;
+// `;
 
-import './App.scss';
+const App = () => {
+  return (
+    <Router>
+      <Switch>
+        <Route exact path="/" component={Home} />
+        <Route exact path="/tic-tac-toe" component={TicTacToe} />
+      </Switch>
+    </Router>
+  );
+};
 
-export default class App extends Component {
-  state = {
-    name: 'Eduardo Perez',
-  }
-
-  render() {
-    const { name } = this.state;
-
-    return (
-      <div className="App">
-        <Heading>i am {name}.</Heading>
-        <Heading>k. thanks. bye.</Heading>
-      </div>
-    );
-  }
-}
+export default App;
