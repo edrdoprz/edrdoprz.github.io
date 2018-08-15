@@ -25,6 +25,8 @@
     "semi": "warn",
     "arrow-body-style": "off",
     "no-multiple-empty-lines": ["warn", {"max": 1}],
-    "object-curly-newline": "off"
+    "object-curly-newline": "off",
+    "no-unused-vars": "warn",
+    "operator-linebreak": "warn"
   }
 }

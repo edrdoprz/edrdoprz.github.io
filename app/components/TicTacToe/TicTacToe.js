@@ -40,41 +40,72 @@ const StartGameButton = styled.button`
 
 export default class TicTacToe extends Component {
   state = {
-    cells: [],
-    firstPlayer: '',
+    board: [null, null, null, null, null, null, null, null, null],
+    currentPlayer: '',
     gameStarted: false,
-    lastMove: null,
     myMoves: {},
     mySymbol: '',
     userMoves: {},
     userSymbol: '',
   };
 
-  componentWillMount() {
-    const cells = [];
-    for (let i = 0; i < 9; i += 1) {
-      cells.push(null);
-    }
-
-    this.setState({
-      cells,
-    });
-  }
-
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(_, prevState) {
     const {
-      firstPlayer,
+      currentPlayer,
       gameStarted,
     } = this.state;
 
-    if (gameStarted && !prevState.gameStarted && firstPlayer === 'you') {
-      this.handleMyMove(0);
+    if (gameStarted && !prevState.gameStarted && currentPlayer === 'you') {
+      this.computeMyNextMove();
     }
   }
 
+  getCurrentPlayerSymbol = () => {
+    const { currentPlayer, userSymbol, mySymbol } = this.state;
+
+    return currentPlayer === 'you' ? mySymbol : userSymbol;
+  }
+
+  getNextPlayer = () => {
+    const { currentPlayer } = this.state;
+
+    return currentPlayer === 'you' ? 'me' : 'you';
+  }
+
+  getBoard = () => {
+    const { board } = this.state;
+
+    return board;
+  }
+
+  // getWinningMove = () => {
+  //   const { board } = this.state;
+  //   const availableMoves = board.reduce((acc, cell, index) => {
+  //     let moves = acc;
+
+  //     if (cell == null) {
+  //       moves = moves.concat([index]);
+  //     }
+
+  //     return moves;
+  //   }, []);
+
+  //   const winningMove = availableMoves.find((move) => {
+  //     const newBoard = this.createNewBoard(move);
+
+  //     return (
+  //       this.hasWinningRow(newBoard)
+  //       || this.hasWinningColumn(newBoard)
+  //       || this.hasWinningDiagonal(newBoard)
+  //     );
+  //   });
+
+  //   return winningMove;
+  // }
+
   handlePlayerPick = (firstPlayer) => {
     this.setState({
-      firstPlayer,
+      currentPlayer: firstPlayer,
     });
   }
 
@@ -93,15 +124,15 @@ export default class TicTacToe extends Component {
 
   handleUserMove = (index) => {
     const {
-      cells,
+      board,
       userMoves,
       userSymbol,
     } = this.state;
 
-    if (!cells[index]) {
+    if (!board[index]) {
       this.setState({
-        cells: this.handleCellInsert(index, userSymbol),
-        lastMove: index,
+        board: this.createNewBoard(index, board, userSymbol),
+        currentPlayer: this.getNextPlayer(),
         userMoves: { ...userMoves, [index]: true },
       }, this.computeMyNextMove);
     }
@@ -109,107 +140,167 @@ export default class TicTacToe extends Component {
 
   handleMyMove = (index) => {
     const {
+      board,
       myMoves,
       mySymbol,
     } = this.state;
 
     this.setState({
-      cells: this.handleCellInsert(index, mySymbol),
-      lastMove: index,
+      board: this.createNewBoard(index, board, mySymbol),
+      currentPlayer: this.getNextPlayer(),
       myMoves: { ...myMoves, [index]: true },
     });
   }
 
-  handleCellInsert = (index, symbol) => {
-    const {
-      cells,
-    } = this.state;
+  createNewBoard = (index, board, symbol) => {
+    const newBoard = [...board.slice(0, index), symbol, ...board.slice(index + 1)];
 
-    const newCells = [...cells.slice(0, index), symbol, ...cells.slice(index + 1)];
-
-    return newCells;
+    return newBoard;
   }
 
   computeMyNextMove = () => {
     const {
-      cells,
+      board,
       lastMove,
     } = this.state;
 
-    console.log(lastMove);
-    switch (lastMove) {
-      case 1:
-        if (!cells[2]) {
-          this.handleMyMove(2);
-        } else if (!cells[4]) {
-          this.handleMyMove(4);
+    // const winningMove = this.getWinningMove();
+    // if (winningMove != null) {
+    //   console.log(`have winning move: ${winningMove}`);
+    // } else {
+    //   console.log('no winning move');
+    // }
+  }
+
+  minimax = (board) => {
+    const { mySymbol } = this.state;
+    let bestMove = { score: Number.NEGATIVE_INFINITY, index: null };
+    for (let i = 0; i < board.length; i += 1) {
+      if (!board[i]) {
+        const newBoard = this.createNewBoard(i, board, mySymbol);
+        const score = this.minVal(newBoard);
+        if (score > bestMove.score) {
+          bestMove = { score, index: i };
         }
-        break;
-      case 2:
-        if (!cells[3]) {
-          this.handleMyMove(3);
-        } else if (!cells[1]) {
-          this.handleMyMove(1);
-        }
-        break;
-      case 3:
-        if (!cells[2]) {
-          this.handleMyMove(2);
-        } else if (!cells[6]) {
-          this.handleMyMove(6);
-        }
-        break;
-      case 4:
-        if (!cells[1]) {
-          this.handleMyMove(1);
-        } else if (!cells[7]) {
-          this.handleMyMove(7);
-        }
-        break;
-      case 5:
-        if (!cells[1]) {
-          this.handleMyMove(1);
-        } else if (!cells[2]) {
-          this.handleMyMove(2);
-        }
-        break;
-      case 6:
-        if (!cells[3]) {
-          this.handleMyMove(3);
-        } else if (!cells[9]) {
-          this.handleMyMove(9);
-        }
-        break;
-      case 7:
-        if (!cells[8]) {
-          this.handleMyMove(8);
-        } else if (!cells[4]) {
-          this.handleMyMove(4);
-        }
-        break;
-      case 8:
-        if (!cells[9]) {
-          this.handleMyMove(9);
-        } else if (!cells[7]) {
-          this.handleMyMove(7);
-        }
-        break;
-      case 9:
-        if (!cells[8]) {
-          this.handleMyMove(8);
-        } else if (!cells[6]) {
-          this.handleMyMove(6);
-        }
-        break;
-      default:
-        break;
+      }
     }
+
+    return bestMove;
+  }
+
+  minVal = (board) => {
+    const userWon = this.userHasWon(board);
+    const computerWon = this.computerHasWon(board);
+    const gameTied = board.filter(cell => cell != null).length === 0;
+
+    // if game ended
+    if (computerWon || userWon || gameTied) {
+      if (computerWon) {
+        return 1;
+      }
+
+      if (gameTied) {
+        return 0;
+      }
+
+      return -1;
+    }
+
+    const { userSymbol } = this.state;
+
+    let score = Number.MAX_VALUE;
+    for (let i = 0; i < board.length; i += 1) {
+      if (!board[i]) {
+        const newBoard = this.createNewBoard(i, board, userSymbol);
+        const newScore = this.maxVal(newBoard);
+        if (newScore < score) {
+          score = newScore;
+        }
+      }
+    }
+
+    return score;
+  }
+
+  maxVal = (board) => {
+    const userWon = this.userHasWon(board);
+    const computerWon = this.computerHasWon(board);
+    const gameTied = board.filter(cell => cell != null).length === 0;
+
+    // if game ended
+    if (computerWon || userWon || gameTied) {
+      if (computerWon) {
+        return 1;
+      }
+
+      if (gameTied) {
+        return 0;
+      }
+
+      return -1;
+    }
+
+    const { mySymbol } = this.state;
+
+    let score = Number.NEGATIVE_INFINITY;
+    for (let i = 0; i < board.length; i += 1) {
+      if (!board[i]) {
+        const newBoard = this.createNewBoard(i, board, mySymbol);
+        const newScore = this.minVal(newBoard);
+        if (newScore > score) {
+          score = newScore;
+        }
+      }
+    }
+
+    return score;
+  }
+
+  hasWinningRow = (board, symbol) => {
+    return (
+      (board[0] === symbol && board[1] === symbol && board[2] === symbol)
+      || (board[3] === symbol && board[4] === symbol && board[5] === symbol)
+      || (board[6] === symbol && board[7] === symbol && board[8] === symbol)
+    );
+  }
+
+  hasWinningColumn = (board, symbol) => {
+    return (
+      (board[0] === symbol && board[3] === symbol && board[6] === symbol)
+      || (board[1] === symbol && board[4] === symbol && board[7] === symbol)
+      || (board[2] === symbol && board[5] === symbol && board[8] === symbol)
+    );
+  }
+
+  hasWinningDiagonal = (board, symbol) => {
+    return (
+      (board[0] === symbol && board[4] === symbol && board[8] === symbol) ||
+      (board[2] === symbol && board[4] === symbol && board[6] === symbol)
+    );
+  }
+
+  userHasWon = (board) => {
+    const { userSymbol } = this.state;
+    return (
+      this.hasWinningRow(board, userSymbol)
+      || this.hasWinningRow(board, userSymbol)
+      || this.hasWinningRow(board, userSymbol)
+    );
+  }
+
+  computerHasWon = (board) => {
+    const { mySymbol } = this.state;
+    return (
+      this.hasWinningRow(board, mySymbol)
+      || this.hasWinningRow(board, mySymbol)
+      || this.hasWinningRow(board, mySymbol)
+    );
   }
 
   render() {
     const {
-      cells,
-      firstPlayer,
+      board,
+      currentPlayer,
       gameStarted,
       userSymbol,
     } = this.state;
@@ -217,16 +308,16 @@ export default class TicTacToe extends Component {
     return (
       <Wrapper>
         <TicTacToeBoard
-          cells={cells}
+          board={board}
           onUserMove={this.handleUserMove}
         />
         {!gameStarted && (
           <PickersWrapper>
-            <FirstPlayerPicker onPlayerClick={this.handlePlayerPick} selected={firstPlayer} />
-            {!!firstPlayer && (
+            <FirstPlayerPicker onPlayerClick={this.handlePlayerPick} selected={currentPlayer} />
+            {!!currentPlayer && (
               <SymbolPicker onSymbolClick={this.handleSymbolPick} selected={userSymbol} />
             )}
-            {(!!firstPlayer && !!userSymbol) && (
+            {(!!currentPlayer && !!userSymbol) && (
               <StartGameButton onClick={this.handleStartGame}>
                 Start Game
               </StartGameButton>

@@ -21,13 +21,13 @@ const BoardCell = styled.span`
 class TicTacToeCells extends PureComponent {
   render() {
     const {
-      cells,
+      board,
       onUserMove,
     } = this.props;
 
     return (
       <BoardCellContainer>
-        {cells.map((cell, index) => (
+        {board.map((cell, index) => (
           <BoardCell onClick={() => onUserMove(index)} key={index}>{cell}</BoardCell>
         ))}
       </BoardCellContainer>
@@ -36,7 +36,7 @@ class TicTacToeCells extends PureComponent {
 }
 
 TicTacToeCells.propTypes = {
-  cells: PropTypes.arrayOf(PropTypes.string).isRequired,
+  board: PropTypes.arrayOf(PropTypes.string).isRequired,
   onUserMove: PropTypes.func.isRequired,
 };
 
