@@ -129,7 +129,7 @@ export default class TicTacToe extends Component {
       userSymbol,
     } = this.state;
 
-    if (!board[index]) {
+    if (board[index] == null) {
       this.setState({
         board: this.createNewBoard(index, board, userSymbol),
         currentPlayer: this.getNextPlayer(),
@@ -164,6 +164,11 @@ export default class TicTacToe extends Component {
       lastMove,
     } = this.state;
 
+    const bestMove = this.minimax(board);
+    console.log(bestMove);
+
+    this.handleMyMove(bestMove.index);
+
     // const winningMove = this.getWinningMove();
     // if (winningMove != null) {
     //   console.log(`have winning move: ${winningMove}`);
@@ -176,8 +181,9 @@ export default class TicTacToe extends Component {
     const { mySymbol } = this.state;
     let bestMove = { score: Number.NEGATIVE_INFINITY, index: null };
     for (let i = 0; i < board.length; i += 1) {
-      if (!board[i]) {
+      if (board[i] == null) {
         const newBoard = this.createNewBoard(i, board, mySymbol);
+
         const score = this.minVal(newBoard);
         if (score > bestMove.score) {
           bestMove = { score, index: i };
@@ -191,7 +197,7 @@ export default class TicTacToe extends Component {
   minVal = (board) => {
     const userWon = this.userHasWon(board);
     const computerWon = this.computerHasWon(board);
-    const gameTied = board.filter(cell => cell != null).length === 0;
+    const gameTied = board.filter(cell => cell == null).length === 0;
 
     // if game ended
     if (computerWon || userWon || gameTied) {
@@ -210,7 +216,7 @@ export default class TicTacToe extends Component {
 
     let score = Number.MAX_VALUE;
     for (let i = 0; i < board.length; i += 1) {
-      if (!board[i]) {
+      if (board[i] == null) {
         const newBoard = this.createNewBoard(i, board, userSymbol);
         const newScore = this.maxVal(newBoard);
         if (newScore < score) {
@@ -225,7 +231,7 @@ export default class TicTacToe extends Component {
   maxVal = (board) => {
     const userWon = this.userHasWon(board);
     const computerWon = this.computerHasWon(board);
-    const gameTied = board.filter(cell => cell != null).length === 0;
+    const gameTied = board.filter(cell => cell == null).length === 0;
 
     // if game ended
     if (computerWon || userWon || gameTied) {
@@ -244,7 +250,7 @@ export default class TicTacToe extends Component {
 
     let score = Number.NEGATIVE_INFINITY;
     for (let i = 0; i < board.length; i += 1) {
-      if (!board[i]) {
+      if (board[i] == null) {
         const newBoard = this.createNewBoard(i, board, mySymbol);
         const newScore = this.minVal(newBoard);
         if (newScore > score) {
@@ -283,8 +289,8 @@ export default class TicTacToe extends Component {
     const { userSymbol } = this.state;
     return (
       this.hasWinningRow(board, userSymbol)
-      || this.hasWinningRow(board, userSymbol)
-      || this.hasWinningRow(board, userSymbol)
+      || this.hasWinningColumn(board, userSymbol)
+      || this.hasWinningDiagonal(board, userSymbol)
     );
   }
 
@@ -292,8 +298,8 @@ export default class TicTacToe extends Component {
     const { mySymbol } = this.state;
     return (
       this.hasWinningRow(board, mySymbol)
-      || this.hasWinningRow(board, mySymbol)
-      || this.hasWinningRow(board, mySymbol)
+      || this.hasWinningColumn(board, mySymbol)
+      || this.hasWinningDiagonal(board, mySymbol)
     );
   }
 
